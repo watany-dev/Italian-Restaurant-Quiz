@@ -8,80 +8,195 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🗼 ハノイの塔</h1>
-            <p class="subtitle">すべてのリングを右の塔に移そう！</p>
-        </header>
+        <!-- モード選択画面 -->
+        <div id="modeSelect" class="mode-select-screen">
+            <header>
+                <h1>🎮 ゲームモード選択</h1>
+                <p class="subtitle">あそびたいモードを選んでね！</p>
+            </header>
 
-        <div class="game-info">
-            <div class="info-card">
-                <label for="difficulty">難易度を選ぶ:</label>
-                <select id="difficulty">
-                    <option value="3">かんたん（3個）</option>
-                    <option value="4">ふつう（4個）</option>
-                    <option value="5">むずかしい（5個）</option>
-                </select>
-                <button id="startBtn" class="btn-primary">ゲーム開始</button>
+            <div class="mode-buttons">
+                <button id="storyModeBtn" class="mode-button story-mode">
+                    <div class="mode-icon">📖</div>
+                    <div class="mode-title">ストーリーモード</div>
+                    <div class="mode-description">冒険の物語を進めるよ</div>
+                </button>
+                <button id="normalModeBtn" class="mode-button normal-mode">
+                    <div class="mode-icon">🎯</div>
+                    <div class="mode-title">ノーマルモード</div>
+                    <div class="mode-description">難易度を選んでプレイ</div>
+                </button>
             </div>
-            <div class="info-card stats">
-                <div>
-                    <span class="label">移動回数:</span>
-                    <span id="moves" class="stat-value">0</span>
+        </div>
+
+        <!-- ストーリーモード：チャプター選択画面 -->
+        <div id="storyMode" class="story-mode-screen hidden">
+            <header class="story-header">
+                <button id="backToModeSelect" class="btn-back">← もどる</button>
+                <h1 id="storyTitle">🌟 魔法の塔の冒険</h1>
+                <p class="subtitle">勇敢な君が、古い塔の謎をといて、魔法の宝を取り戻すお話</p>
+            </header>
+
+            <div class="story-display">
+                <div id="storyContent" class="story-content">
+                    <!-- ストーリーと画像がここに表示される -->
                 </div>
-                <div>
-                    <span class="label">最小回数:</span>
-                    <span id="minMoves" class="stat-value">-</span>
+            </div>
+
+            <div class="chapter-progress">
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+                <p id="chapterInfo" class="chapter-info">チャプター 1 / 5</p>
+            </div>
+
+            <button id="storyStartBtn" class="btn-primary btn-large">✨ チャプターをはじめる</button>
+        </div>
+
+        <!-- ノーマルモード画面 -->
+        <div id="normalMode" class="normal-mode-screen hidden">
+            <header>
+                <button id="backToModeSelect2" class="btn-back">← もどる</button>
+                <h1>🗼 ハノイの塔</h1>
+                <p class="subtitle">すべてのリングを右の塔に移そう！</p>
+            </header>
+
+            <div class="game-info">
+                <div class="info-card">
+                    <label for="difficulty">難易度を選ぶ:</label>
+                    <select id="difficulty">
+                        <option value="3">かんたん（3個）</option>
+                        <option value="4">ふつう（4個）</option>
+                        <option value="5">むずかしい（5個）</option>
+                    </select>
+                    <button id="startBtn" class="btn-primary">ゲーム開始</button>
+                </div>
+                <div class="info-card stats">
+                    <div>
+                        <span class="label">移動回数:</span>
+                        <span id="moves" class="stat-value">0</span>
+                    </div>
+                    <div>
+                        <span class="label">最小回数:</span>
+                        <span id="minMoves" class="stat-value">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rules">
+                <h2>ルール</h2>
+                <ol>
+                    <li>左の塔にあるすべてのリングを右の塔に移します</li>
+                    <li>一度に1つのリングだけ移せます</li>
+                    <li>大きいリングの上に小さいリングを置くことはできません</li>
+                    <li>真ん中の塔も使って移動します</li>
+                </ol>
+            </div>
+
+            <div class="game-board" id="gameBoard">
+                <div class="tower" id="tower0">
+                    <div class="tower-base"></div>
+                    <div class="tower-name">左の塔</div>
+                    <div class="disks-area" id="disks0"></div>
+                </div>
+                <div class="tower" id="tower1">
+                    <div class="tower-base"></div>
+                    <div class="tower-name">真ん中の塔</div>
+                    <div class="disks-area" id="disks1"></div>
+                </div>
+                <div class="tower" id="tower2">
+                    <div class="tower-base"></div>
+                    <div class="tower-name">右の塔</div>
+                    <div class="disks-area" id="disks2"></div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="undoBtn" class="btn-secondary">元に戻す</button>
+                <button id="resetBtn" class="btn-secondary">リセット</button>
+                <button id="autoBtn" class="btn-primary">🤖 Auto</button>
+            </div>
+
+            <div id="victory" class="victory-screen hidden">
+                <div class="victory-content">
+                    <h2>🎉 クリア！</h2>
+                    <p class="victory-text">すばらしい！</p>
+                    <div class="victory-stats">
+                        <p>移動回数: <span id="finalMoves">0</span> 回</p>
+                        <p>最小回数: <span id="finalMinMoves">-</span> 回</p>
+                    </div>
+                    <button id="nextBtn" class="btn-primary">もう一度</button>
                 </div>
             </div>
         </div>
 
-        <div class="rules">
-            <h2>ルール</h2>
-            <ol>
-                <li>左の塔にあるすべてのリングを右の塔に移します</li>
-                <li>一度に1つのリングだけ移せます</li>
-                <li>大きいリングの上に小さいリングを置くことはできません</li>
-                <li>真ん中の塔も使って移動します</li>
-            </ol>
-        </div>
-
-        <div class="game-board" id="gameBoard">
-            <div class="tower" id="tower0">
-                <div class="tower-base"></div>
-                <div class="tower-name">左の塔</div>
-                <div class="disks-area" id="disks0"></div>
-            </div>
-            <div class="tower" id="tower1">
-                <div class="tower-base"></div>
-                <div class="tower-name">真ん中の塔</div>
-                <div class="disks-area" id="disks1"></div>
-            </div>
-            <div class="tower" id="tower2">
-                <div class="tower-base"></div>
-                <div class="tower-name">右の塔</div>
-                <div class="disks-area" id="disks2"></div>
-            </div>
-        </div>
-
-        <div class="controls">
-            <button id="undoBtn" class="btn-secondary">元に戻す</button>
-            <button id="resetBtn" class="btn-secondary">リセット</button>
-            <button id="autoBtn" class="btn-primary">🤖 Auto</button>
-        </div>
-
-        <div id="victory" class="victory-screen hidden">
-            <div class="victory-content">
-                <h2>🎉 クリア！</h2>
-                <p class="victory-text">すばらしい！</p>
-                <div class="victory-stats">
-                    <p>移動回数: <span id="finalMoves">0</span> 回</p>
-                    <p>最小回数: <span id="finalMinMoves">-</span> 回</p>
+        <!-- ゲーム中のストーリーモード -->
+        <div id="gameplayStory" class="gameplay-story hidden">
+            <div class="story-game-container">
+                <div class="story-sidebar">
+                    <div id="storyCharacter" class="story-character">
+                        <!-- キャラクター画像とセリフ -->
+                    </div>
                 </div>
-                <button id="nextBtn" class="btn-primary">もう一度</button>
+
+                <div class="story-game-main">
+                    <div class="game-info">
+                        <div class="info-card">
+                            <div>
+                                <span class="label">移動回数:</span>
+                                <span id="storyMoves" class="stat-value">0</span>
+                            </div>
+                            <div>
+                                <span class="label">最小回数:</span>
+                                <span id="storyMinMoves" class="stat-value">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="game-board" id="gameBoard2">
+                        <div class="tower" id="tower0-story">
+                            <div class="tower-base"></div>
+                            <div class="tower-name" id="towerName0">左の塔</div>
+                            <div class="disks-area" id="disks0-story"></div>
+                        </div>
+                        <div class="tower" id="tower1-story">
+                            <div class="tower-base"></div>
+                            <div class="tower-name" id="towerName1">真ん中の塔</div>
+                            <div class="disks-area" id="disks1-story"></div>
+                        </div>
+                        <div class="tower" id="tower2-story">
+                            <div class="tower-base"></div>
+                            <div class="tower-name" id="towerName2">右の塔</div>
+                            <div class="disks-area" id="disks2-story"></div>
+                        </div>
+                    </div>
+
+                    <div class="story-controls">
+                        <button id="undoBtn2" class="btn-secondary">元に戻す</button>
+                        <button id="resetBtn2" class="btn-secondary">リセット</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="storyVictory" class="victory-screen hidden">
+                <div class="victory-content">
+                    <div id="victoryCharacter" class="victory-character">
+                        <!-- クリア時のキャラクター -->
+                    </div>
+                    <h2>🎉 クリア！</h2>
+                    <p id="victoryMessage" class="victory-text">すばらしい！</p>
+                    <div class="victory-stats">
+                        <p>移動回数: <span id="storyFinalMoves">0</span> 回</p>
+                        <p>最小回数: <span id="storyFinalMinMoves">-</span> 回</p>
+                    </div>
+                    <button id="storyNextBtn" class="btn-primary">つぎのチャプターへ →</button>
+                </div>
             </div>
         </div>
     </div>
 
+    <script src="story-data.js"></script>
+    <script src="story-mode.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

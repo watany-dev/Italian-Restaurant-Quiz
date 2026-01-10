@@ -256,4 +256,5 @@ class HanoiGame {
 // Start the game when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     new HanoiGame();
+    new StoryModeController();
 });
