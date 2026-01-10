@@ -44,6 +44,11 @@ class StoryModeController {
         this.hideAllScreens();
         this.modeSelectScreen.classList.add('hidden');
         this.normalModeScreen.classList.remove('hidden');
+        
+        // ノーマルモードのゲームを初期化
+        if (!window.normalGameInstance) {
+            window.normalGameInstance = new HanoiGame();
+        }
     }
 
     backToModeSelect() {
@@ -90,23 +95,57 @@ class StoryModeController {
         if (!chapter) return;
 
         this.hideAllScreens();
+        
+        // 前のゲームインスタンスをクリア
+        if (this.storyGame) {
+            this.storyGame = null;
+        }
+        
+        // DOMをリセット
+        this.resetGameplayStoryDOM();
+        
         this.gameplayStoryScreen.classList.remove('hidden');
 
         // ストーリーゲームの初期化
-        this.storyGame = new StoryHanoiGame(chapter);
+        this.storyGame = new StoryHanoiGame(chapter, this);
+    }
+    
+    resetGameplayStoryDOM() {
+        // キャラクターのリセット
+        const storyCharacterDiv = document.getElementById('storyCharacter');
+        if (storyCharacterDiv) {
+            storyCharacterDiv.innerHTML = '';
+        }
+        
+        // ディスクエリアのリセット
+        ['disks0-story', 'disks1-story', 'disks2-story'].forEach(id => {
+            const elem = document.getElementById(id);
+            if (elem) {
+                elem.innerHTML = '';
+            }
+        });
+        
+        // クリア画面のリセット
+        const victoryScreen = document.getElementById('storyVictory');
+        if (victoryScreen) {
+            victoryScreen.classList.add('hidden');
+        }
     }
 }
 
 // ストーリーモード用のハノイゲーム
 class StoryHanoiGame {
-    constructor(chapter) {
+    constructor(chapter, storyController) {
         this.chapter = chapter;
+        this.storyController = storyController;
         this.towers = [[], [], []];
         this.moves = 0;
         this.history = [];
         this.draggedDisk = null;
         this.draggedFromTower = null;
         this.diskCount = chapter.diskCount;
+        
+        console.log(`🎮 チャプター ${chapter.id} 開始: ${chapter.title} (${chapter.diskCount}個のリング)`);
         
         this.initializeElements();
         this.attachEventListeners();
@@ -192,6 +231,9 @@ class StoryHanoiGame {
         this.moves = 0;
         this.history = [];
         
+        // diskCountが正しく設定されているか確認
+        console.log(`startGame: diskCount = ${this.diskCount}, chapter = ${this.chapter.id}`);
+        
         // リングを初期化
         for (let i = this.diskCount; i >= 1; i--) {
             this.towers[0].push(i);
@@ -202,6 +244,7 @@ class StoryHanoiGame {
         this.movesDisplay.textContent = '0';
         this.victoryScreen.classList.add('hidden');
         
+        console.log(`開始: ${this.diskCount}個のリング、左の塔:`, this.towers[0]);
         this.updateDisplay();
     }
 
@@ -333,29 +376,30 @@ class StoryHanoiGame {
     }
 
     nextChapter() {
-        const storyController = window.storyController;
-        if (!storyController) return;
+        if (!this.storyController) return;
 
         if (this.chapter.isFinal) {
             // ゲーム完了
-            storyController.showStoryMode();
-            alert('🎉 すべてのチャプターをクリアしました！おめでとう！');
-        } else {
-            // 次のチャプターへ
-            storyController.currentChapter++;
-            storyController.updateStoryDisplay();
-            
-            // ストーリーモード画面に戻す
+            this.storyController.currentChapter = 1; // リセット
             document.getElementById('gameplayStory').classList.add('hidden');
             document.getElementById('storyMode').classList.remove('hidden');
+            this.storyController.updateStoryDisplay();
+            alert('🎉 すべてのチャプターをクリアしました！おめでとう！\n\n勇者として認められた君。次の冒険に挑みますか？');
+        } else {
+            // 次のチャプターへ
+            this.storyController.currentChapter++;
+            document.getElementById('gameplayStory').classList.add('hidden');
+            document.getElementById('storyMode').classList.remove('hidden');
+            this.storyController.updateStoryDisplay();
         }
     }
 }
 
 // グローバルで ストーリーコントローラーのインスタンスを保持
-window.storyController = null;
+let storyControllerInstance = null;
 
 // ページ読み込み時の初期化
 document.addEventListener('DOMContentLoaded', () => {
-    window.storyController = new StoryModeController();
+    storyControllerInstance = new StoryModeController();
+    window.storyController = storyControllerInstance;
 });

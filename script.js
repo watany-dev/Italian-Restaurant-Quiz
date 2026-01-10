@@ -255,6 +255,6 @@ class HanoiGame {
 
 // Start the game when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    new HanoiGame();
-    new StoryModeController();
+    // ストーリーモードコントローラーのみ初期化
+    // HanoiGameはノーマルモードが選択された時に初期化される
 });
