@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ハノイの塔 - 子ども向けゲーム</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🗼 ハノイの塔</h1>
+            <p class="subtitle">すべてのリングを右の塔に移そう！</p>
+        </header>
+
+        <div class="game-info">
+            <div class="info-card">
+                <label for="difficulty">難易度を選ぶ:</label>
+                <select id="difficulty">
+                    <option value="3">かんたん（3個）</option>
+                    <option value="4">ふつう（4個）</option>
+                    <option value="5">むずかしい（5個）</option>
+                </select>
+                <button id="startBtn" class="btn-primary">ゲーム開始</button>
+            </div>
+            <div class="info-card stats">
+                <div>
+                    <span class="label">移動回数:</span>
+                    <span id="moves" class="stat-value">0</span>
+                </div>
+                <div>
+                    <span class="label">最小回数:</span>
+                    <span id="minMoves" class="stat-value">-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="rules">
+            <h2>ルール</h2>
+            <ol>
+                <li>左の塔にあるすべてのリングを右の塔に移します</li>
+                <li>一度に1つのリングだけ移せます</li>
+                <li>大きいリングの上に小さいリングを置くことはできません</li>
+                <li>真ん中の塔も使って移動します</li>
+            </ol>
+        </div>
+
+        <div class="game-board" id="gameBoard">
+            <div class="tower" id="tower0">
+                <div class="tower-base"></div>
+                <div class="tower-name">左の塔</div>
+                <div class="disks-area" id="disks0"></div>
+            </div>
+            <div class="tower" id="tower1">
+                <div class="tower-base"></div>
+                <div class="tower-name">真ん中の塔</div>
+                <div class="disks-area" id="disks1"></div>
+            </div>
+            <div class="tower" id="tower2">
+                <div class="tower-base"></div>
+                <div class="tower-name">右の塔</div>
+                <div class="disks-area" id="disks2"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="undoBtn" class="btn-secondary">元に戻す</button>
+            <button id="resetBtn" class="btn-secondary">リセット</button>
+            <button id="autoBtn" class="btn-primary">🤖 Auto</button>
+        </div>
+
+        <div id="victory" class="victory-screen hidden">
+            <div class="victory-content">
+                <h2>🎉 クリア！</h2>
+                <p class="victory-text">すばらしい！</p>
+                <div class="victory-stats">
+                    <p>移動回数: <span id="finalMoves">0</span> 回</p>
+                    <p>最小回数: <span id="finalMinMoves">-</span> 回</p>
+                </div>
+                <button id="nextBtn" class="btn-primary">もう一度</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
