@@ -116,6 +116,9 @@ class HanoiGame {
         this.towers[toTower].push(disk);
         this.moves++;
 
+        // Create landing effect at the target tower
+        this.createLandingEffect(toTower, disk);
+
         this.updateDisplay();
         this.checkVictory();
     }
@@ -205,6 +208,48 @@ class HanoiGame {
         
         // Move n-1 disks from auxiliary to destination using source
         this.generateMoves(n - 1, auxiliary, destination, source, moves);
+    }
+
+    createLandingEffect(towerIndex, diskSize) {
+        const towerElement = document.getElementById(`tower${towerIndex}`);
+        
+        // Create main impact effect
+        const effect = document.createElement('div');
+        effect.className = 'landing-effect';
+        towerElement.appendChild(effect);
+        
+        // Trigger animation by adding class
+        requestAnimationFrame(() => {
+            effect.classList.add('impact');
+        });
+        
+        // Create comic-style burst text
+        const burstTexts = ['POW!', 'BAM!', 'BOOM!', 'CRASH!'];
+        const randomText = burstTexts[Math.floor(Math.random() * burstTexts.length)];
+        
+        for (let i = 0; i < 3; i++) {
+            const burst = document.createElement('div');
+            burst.className = 'burst-text';
+            burst.textContent = randomText;
+            towerElement.appendChild(burst);
+            
+            requestAnimationFrame(() => {
+                burst.classList.add('burst-animate');
+            });
+            
+            setTimeout(() => {
+                if (burst.parentNode) {
+                    burst.remove();
+                }
+            }, 600);
+        }
+        
+        // Remove main effect after animation
+        setTimeout(() => {
+            if (effect.parentNode) {
+                effect.remove();
+            }
+        }, 600);
     }
 }
 
