@@ -1,7 +1,7 @@
 import './App.css'
 import { useEffect, useState } from 'react'
 import { loadMenuItems } from './lib/loadMenu'
-import type { Difficulty, LoadState, MenuItem, Mode, Question } from './types'
+import type { AnswerRecord, Difficulty, LoadState, MenuItem, Mode, Question, QuestionCount } from './types'
 import { SetupScreen } from './components/SetupScreen'
 import { QuizScreen } from './components/QuizScreen'
 import { ResultScreen } from './components/ResultScreen'
@@ -14,16 +14,38 @@ import {
 
 type Screen = 'setup' | 'quiz' | 'result'
 
+function bestScoreKey(mode: Mode, difficulty: Difficulty, questionCount: QuestionCount): string {
+  return `saizeriyaQuiz.bestScore.v1:${mode}:${difficulty}:${questionCount}`
+}
+
+function loadBestScore(mode: Mode, difficulty: Difficulty, questionCount: QuestionCount): number | null {
+  const raw = localStorage.getItem(bestScoreKey(mode, difficulty, questionCount))
+  if (raw === null) return null
+  const n = Number.parseInt(raw, 10)
+  return Number.isFinite(n) ? n : null
+}
+
+function saveBestScore(
+  mode: Mode,
+  difficulty: Difficulty,
+  questionCount: QuestionCount,
+  score: number,
+): void {
+  localStorage.setItem(bestScoreKey(mode, difficulty, questionCount), String(score))
+}
+
 function App() {
   const [menuState, setMenuState] = useState<LoadState<MenuItem[]>>({ status: 'idle' })
   const [screen, setScreen] = useState<Screen>('setup')
   const [mode, setMode] = useState<Mode>('nameToNumber')
   const [difficulty, setDifficulty] = useState<Difficulty>('normal')
+  const [questionCount, setQuestionCount] = useState<QuestionCount>(10)
 
   const [questions, setQuestions] = useState<Question[]>([])
   const [questionIndex, setQuestionIndex] = useState(0)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
-  const [correctCount, setCorrectCount] = useState(0)
+  const [answers, setAnswers] = useState<AnswerRecord[]>([])
+  const [bestScore, setBestScore] = useState<number | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -45,10 +67,15 @@ function App() {
     }
   }, [])
 
+  useEffect(() => {
+    if (menuState.status !== 'loaded') return
+    setBestScore(loadBestScore(mode, difficulty, questionCount))
+  }, [menuState.status, mode, difficulty, questionCount])
+
   const startQuiz = () => {
     if (menuState.status !== 'loaded') return
 
-    const total = 10
+    const total = questionCount
     const picked = pickQuizItems(menuState.data, total)
     const qs = picked.map((item) => {
       switch (mode) {
@@ -66,7 +93,7 @@ function App() {
     setQuestions(qs)
     setQuestionIndex(0)
     setSelectedIndex(null)
-    setCorrectCount(0)
+    setAnswers([])
     setScreen('quiz')
   }
 
@@ -77,9 +104,17 @@ function App() {
     if (!q) return
 
     setSelectedIndex(idx)
-    if (idx === q.correctIndex) {
-      setCorrectCount((c) => c + 1)
-    }
+    setAnswers((prev) => {
+      const record: AnswerRecord = {
+        questionId: q.id,
+        prompt: q.prompt,
+        instruction: q.instruction,
+        choices: q.choices,
+        correctIndex: q.correctIndex,
+        selectedIndex: idx,
+      }
+      return [...prev, record]
+    })
   }
 
   const onNext = () => {
@@ -88,6 +123,25 @@ function App() {
 
     const nextIndex = questionIndex + 1
     if (nextIndex >= questions.length) {
+      const correctSoFar = answers.reduce(
+        (acc, a) => acc + (a.selectedIndex === a.correctIndex ? 1 : 0),
+        0,
+      )
+
+      // answers is appended on selection; if state hasn't caught up yet,
+      // include the last answer exactly once.
+      const needLast = answers.length < questions.length
+      const lastWasCorrect = selectedIndex === questions[questionIndex]?.correctIndex
+      const score = correctSoFar + (needLast && lastWasCorrect ? 1 : 0)
+
+      const currentBest = loadBestScore(mode, difficulty, questionCount)
+      if (currentBest === null || score > currentBest) {
+        saveBestScore(mode, difficulty, questionCount, score)
+        setBestScore(score)
+      } else {
+        setBestScore(currentBest)
+      }
+
       setScreen('result')
       return
     }
@@ -101,7 +155,11 @@ function App() {
     setQuestions([])
     setQuestionIndex(0)
     setSelectedIndex(null)
-    setCorrectCount(0)
+    setAnswers([])
+  }
+
+  const retry = () => {
+    startQuiz()
   }
 
   return (
@@ -134,8 +192,11 @@ function App() {
             <SetupScreen
               mode={mode}
               difficulty={difficulty}
+              questionCount={questionCount}
+              bestScore={bestScore}
               onChangeMode={setMode}
               onChangeDifficulty={setDifficulty}
+              onChangeQuestionCount={setQuestionCount}
               onStart={startQuiz}
             />
           </>
@@ -143,6 +204,7 @@ function App() {
 
         {menuState.status === 'loaded' && screen === 'quiz' && questions[questionIndex] && (
           <QuizScreen
+            key={questions[questionIndex]!.id}
             question={questions[questionIndex]!}
             index={questionIndex}
             total={questions.length}
@@ -153,7 +215,12 @@ function App() {
         )}
 
         {menuState.status === 'loaded' && screen === 'result' && (
-          <ResultScreen correctCount={correctCount} total={questions.length} onRestart={restart} />
+          <ResultScreen
+            answers={answers}
+            bestScore={bestScore}
+            onRetry={retry}
+            onBackToSetup={restart}
+          />
         )}
       </main>
     </div>

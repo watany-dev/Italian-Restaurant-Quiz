@@ -8,6 +8,8 @@ export type Mode = 'nameToNumber' | 'numberToName' | 'nameToPrice'
 
 export type Difficulty = 'easy' | 'normal' | 'hard'
 
+export type QuestionCount = 5 | 10
+
 export type Question = {
   id: string
   prompt: string
@@ -19,6 +21,7 @@ export type Question = {
 export type AnswerRecord = {
   questionId: string
   prompt: string
+  instruction: string
   choices: string[]
   correctIndex: number
   selectedIndex: number

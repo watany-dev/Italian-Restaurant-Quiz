@@ -1,23 +1,56 @@
-import type { Difficulty, Mode } from '../types'
+import type { Difficulty, Mode, QuestionCount } from '../types'
 
 type Props = {
   mode: Mode
   difficulty: Difficulty
+  questionCount: QuestionCount
+  bestScore: number | null
   onChangeMode: (mode: Mode) => void
   onChangeDifficulty: (difficulty: Difficulty) => void
+  onChangeQuestionCount: (count: QuestionCount) => void
   onStart: () => void
 }
 
 export function SetupScreen({
   mode,
   difficulty,
+  questionCount,
+  bestScore,
   onChangeMode,
   onChangeDifficulty,
+  onChangeQuestionCount,
   onStart,
 }: Props) {
   return (
     <div className="screen">
-      <p className="muted">10 questions, 4 choices. Local CSV-driven.</p>
+      <p className="muted">4 choices. Local CSV-driven.</p>
+      <p className="mutedSmall">
+        Best (this mode): {bestScore === null ? '-' : `${bestScore} / ${questionCount}`}
+      </p>
+
+      <section className="panel">
+        <div className="panelTitle">Questions</div>
+        <div className="segmented" role="radiogroup" aria-label="Question count">
+          <button
+            type="button"
+            className={questionCount === 5 ? 'segBtn isActive' : 'segBtn'}
+            role="radio"
+            aria-checked={questionCount === 5}
+            onClick={() => onChangeQuestionCount(5)}
+          >
+            5
+          </button>
+          <button
+            type="button"
+            className={questionCount === 10 ? 'segBtn isActive' : 'segBtn'}
+            role="radio"
+            aria-checked={questionCount === 10}
+            onClick={() => onChangeQuestionCount(10)}
+          >
+            10
+          </button>
+        </div>
+      </section>
 
       <section className="panel">
         <div className="panelTitle">Mode</div>
@@ -88,7 +121,7 @@ export function SetupScreen({
 
       <div className="ctaRow">
         <button type="button" className="primaryBtn" onClick={onStart}>
-          Start (10)
+          Start ({questionCount})
         </button>
       </div>
     </div>
