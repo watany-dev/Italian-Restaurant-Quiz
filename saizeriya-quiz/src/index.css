@@ -1,0 +1,49 @@
+:root {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: rgba(32, 24, 14, 0.92);
+  background-color: #faf6ef;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      1200px 800px at 10% -10%,
+      rgba(240, 191, 76, 0.35),
+      rgba(250, 246, 239, 0) 60%
+    ),
+    radial-gradient(
+      900px 700px at 110% 10%,
+      rgba(3, 114, 63, 0.18),
+      rgba(250, 246, 239, 0) 55%
+    ),
+    radial-gradient(
+      900px 700px at 50% 110%,
+      rgba(220, 86, 56, 0.18),
+      rgba(250, 246, 239, 0) 60%
+    ),
+    linear-gradient(180deg, #faf6ef, #fff);
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+}
