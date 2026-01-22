@@ -51,7 +51,7 @@ function App() {
     let cancelled = false
     setMenuState({ status: 'loading' })
 
-    loadMenuItems('/sauzerua.csv')
+    loadMenuItems(`${import.meta.env.BASE_URL}sauzerua.csv`)
       .then((items) => {
         if (cancelled) return
         setMenuState({ status: 'loaded', data: items })
@@ -177,7 +177,7 @@ function App() {
       </header>
 
       <main className="card">
-        {menuState.status === 'loading' && <p className="muted">Loading /sauzerua.csv ...</p>}
+        {menuState.status === 'loading' && <p className="muted">Loading menu data...</p>}
 
         {menuState.status === 'error' && (
           <div className="errorBox" role="alert">
