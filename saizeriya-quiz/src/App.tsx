@@ -187,7 +187,6 @@ function App() {
 
         {menuState.status === 'loaded' && screen === 'setup' && (
           <>
-            <p className="muted">Loaded: {menuState.data.length} items</p>
             <SetupScreen
               mode={mode}
               difficulty={difficulty}
