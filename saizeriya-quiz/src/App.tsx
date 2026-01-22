@@ -178,17 +178,17 @@ function App() {
         <div className="langSwitch">
           <button
             type="button"
-            className={language === 'en' ? 'langBtn isActive' : 'langBtn'}
-            onClick={() => setLanguage('en')}
-          >
-            EN
-          </button>
-          <button
-            type="button"
             className={language === 'ja' ? 'langBtn isActive' : 'langBtn'}
             onClick={() => setLanguage('ja')}
           >
             JA
+          </button>
+          <button
+            type="button"
+            className={language === 'en' ? 'langBtn isActive' : 'langBtn'}
+            onClick={() => setLanguage('en')}
+          >
+            EN
           </button>
         </div>
       </header>

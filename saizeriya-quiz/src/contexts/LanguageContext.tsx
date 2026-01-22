@@ -16,12 +16,7 @@ function getInitialLanguage(): Language {
   if (stored === 'en' || stored === 'ja') {
     return stored
   }
-  // Check browser language
-  const browserLang = navigator.language.toLowerCase()
-  if (browserLang.startsWith('ja')) {
-    return 'ja'
-  }
-  return 'en'
+  return 'ja'
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
