@@ -1,4 +1,5 @@
 import type { Difficulty, Mode, QuestionCount } from '../types'
+import { useLanguage } from '../contexts/LanguageContext'
 
 type Props = {
   mode: Mode
@@ -21,14 +22,16 @@ export function SetupScreen({
   onChangeQuestionCount,
   onStart,
 }: Props) {
+  const { t } = useLanguage()
+
   return (
     <div className="screen">
       <p className="mutedSmall">
-        Best (this mode): {bestScore === null ? '-' : `${bestScore} / ${questionCount}`}
+        {t('bestThisMode')} {bestScore === null ? '-' : `${bestScore} / ${questionCount}`}
       </p>
 
       <section className="panel">
-        <div className="panelTitle">Questions</div>
+        <div className="panelTitle">{t('questions')}</div>
         <div className="segmented" role="radiogroup" aria-label="Question count">
           <button
             type="button"
@@ -52,7 +55,7 @@ export function SetupScreen({
       </section>
 
       <section className="panel">
-        <div className="panelTitle">Mode</div>
+        <div className="panelTitle">{t('mode')}</div>
         <div className="segmented" role="radiogroup" aria-label="Mode">
           <button
             type="button"
@@ -61,7 +64,7 @@ export function SetupScreen({
             aria-checked={mode === 'nameToNumber'}
             onClick={() => onChangeMode('nameToNumber')}
           >
-            商品名 → Number
+            {t('modeNameToNumber')}
           </button>
           <button
             type="button"
@@ -70,7 +73,7 @@ export function SetupScreen({
             aria-checked={mode === 'numberToName'}
             onClick={() => onChangeMode('numberToName')}
           >
-            Number → 商品名
+            {t('modeNumberToName')}
           </button>
           <button
             type="button"
@@ -79,13 +82,13 @@ export function SetupScreen({
             aria-checked={mode === 'nameToPrice'}
             onClick={() => onChangeMode('nameToPrice')}
           >
-            商品名 → 料金
+            {t('modeNameToPrice')}
           </button>
         </div>
       </section>
 
       <section className="panel">
-        <div className="panelTitle">Difficulty</div>
+        <div className="panelTitle">{t('difficulty')}</div>
         <div className="segmented" role="radiogroup" aria-label="Difficulty">
           <button
             type="button"
@@ -94,7 +97,7 @@ export function SetupScreen({
             aria-checked={difficulty === 'easy'}
             onClick={() => onChangeDifficulty('easy')}
           >
-            Easy
+            {t('easy')}
           </button>
           <button
             type="button"
@@ -103,7 +106,7 @@ export function SetupScreen({
             aria-checked={difficulty === 'normal'}
             onClick={() => onChangeDifficulty('normal')}
           >
-            Normal
+            {t('normal')}
           </button>
           <button
             type="button"
@@ -112,15 +115,15 @@ export function SetupScreen({
             aria-checked={difficulty === 'hard'}
             onClick={() => onChangeDifficulty('hard')}
           >
-            Hard
+            {t('hard')}
           </button>
         </div>
-        <p className="mutedSmall">Easy is more random; Hard is more "close" options.</p>
+        <p className="mutedSmall">{t('difficultyHint')}</p>
       </section>
 
       <div className="ctaRow">
         <button type="button" className="primaryBtn" onClick={onStart}>
-          Start ({questionCount})
+          {t('start')} ({questionCount})
         </button>
       </div>
     </div>

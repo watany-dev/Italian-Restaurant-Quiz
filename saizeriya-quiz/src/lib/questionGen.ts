@@ -1,4 +1,5 @@
 import type { Difficulty, MenuItem, Question } from '../types'
+import { type Language, t } from '../locales'
 
 function shuffleInPlace<T>(arr: T[], rng: () => number): void {
   for (let i = arr.length - 1; i > 0; i -= 1) {
@@ -79,6 +80,7 @@ export function generateNameToNumberQuestion(
   allItems: MenuItem[],
   difficulty: Difficulty,
   choiceCount = 4,
+  language: Language = 'en',
 ): Question {
   if (choiceCount < 2) {
     throw new Error('choiceCount must be >= 2')
@@ -87,7 +89,8 @@ export function generateNameToNumberQuestion(
     throw new Error('Not enough items to generate choices')
   }
 
-  const correct = `No. ${item.number}`
+  const formatNumber = (num: number) => t(language, 'formatNumber', { number: num })
+  const correct = formatNumber(item.number)
   const excluded = new Set<number>()
   const correctIndexInAll = allItems.findIndex((x) => x.number === item.number)
   if (correctIndexInAll >= 0) excluded.add(correctIndexInAll)
@@ -99,7 +102,7 @@ export function generateNameToNumberQuestion(
     centerIndex: Math.max(0, correctIndexInAll),
     excluded,
   })
-  const decoys = decoyIndices.map((idx) => `No. ${allItems[idx]!.number}`)
+  const decoys = decoyIndices.map((idx) => formatNumber(allItems[idx]!.number))
 
   const choices = [correct, ...decoys]
   shuffleInPlace(choices, Math.random)
@@ -108,7 +111,7 @@ export function generateNameToNumberQuestion(
   return {
     id: `nameToNumber:${item.number}`,
     prompt: item.name,
-    instruction: 'Choose the correct Number.',
+    instruction: t(language, 'instructionChooseNumber'),
     choices,
     correctIndex,
   }
@@ -119,6 +122,7 @@ export function generateNumberToNameQuestion(
   allItems: MenuItem[],
   difficulty: Difficulty,
   choiceCount = 4,
+  language: Language = 'en',
 ): Question {
   if (choiceCount < 2) {
     throw new Error('choiceCount must be >= 2')
@@ -161,8 +165,8 @@ export function generateNumberToNameQuestion(
   const correctIndex = choices.indexOf(correct)
   return {
     id: `numberToName:${item.number}`,
-    prompt: `No. ${item.number}`,
-    instruction: 'Choose the correct menu name.',
+    prompt: t(language, 'formatNumber', { number: item.number }),
+    instruction: t(language, 'instructionChooseName'),
     choices,
     correctIndex,
   }
@@ -173,6 +177,7 @@ export function generateNameToPriceQuestion(
   allItems: MenuItem[],
   difficulty: Difficulty,
   choiceCount = 4,
+  language: Language = 'en',
 ): Question {
   if (choiceCount < 2) {
     throw new Error('choiceCount must be >= 2')
@@ -197,15 +202,16 @@ export function generateNameToPriceQuestion(
   })
   const decoys = decoyIndices.map((idx) => uniquePrices[idx]!)
 
-  const priceChoices = [correctPrice, ...decoys].map((p) => `${p}円`)
+  const formatPrice = (price: number) => t(language, 'formatPrice', { price })
+  const priceChoices = [correctPrice, ...decoys].map(formatPrice)
   shuffleInPlace(priceChoices, Math.random)
 
-  const correctLabel = `${correctPrice}円`
+  const correctLabel = formatPrice(correctPrice)
   const correctIndex = priceChoices.indexOf(correctLabel)
   return {
     id: `nameToPrice:${item.number}`,
     prompt: item.name,
-    instruction: 'Choose the correct price (yen).',
+    instruction: t(language, 'instructionChoosePrice'),
     choices: priceChoices,
     correctIndex,
   }

@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import type { Question } from '../types'
+import { useLanguage } from '../contexts/LanguageContext'
 
 type Props = {
   question: Question
@@ -18,12 +19,13 @@ export function QuizScreen({
   onSelect,
   onNext,
 }: Props) {
+  const { t } = useLanguage()
   const isAnswered = selectedIndex !== null
   const isCorrect = selectedIndex === question.correctIndex
 
   const title = useMemo(() => {
-    return `Question ${index + 1} / ${total}`
-  }, [index, total])
+    return t('questionProgress', { current: index + 1, total })
+  }, [index, total, t])
 
   return (
     <div className="screen">
@@ -59,14 +61,14 @@ export function QuizScreen({
 
       {isAnswered && (
         <div className={isCorrect ? 'feedback ok' : 'feedback ng'} role="status">
-          <div className="feedbackTitle">{isCorrect ? 'Correct' : 'Wrong'}</div>
-          <div className="feedbackBody">Answer: {question.choices[question.correctIndex]}</div>
+          <div className="feedbackTitle">{isCorrect ? t('correct') : t('wrong')}</div>
+          <div className="feedbackBody">{t('answer')} {question.choices[question.correctIndex]}</div>
         </div>
       )}
 
       <div className="ctaRow">
         <button type="button" className="primaryBtn" onClick={onNext} disabled={!isAnswered}>
-          {index + 1 === total ? 'Finish' : 'Next'}
+          {index + 1 === total ? t('finish') : t('next')}
         </button>
       </div>
     </div>

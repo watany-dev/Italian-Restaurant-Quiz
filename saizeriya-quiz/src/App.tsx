@@ -11,6 +11,7 @@ import {
   generateNumberToNameQuestion,
   pickQuizItems,
 } from './lib/questionGen'
+import { useLanguage } from './contexts/LanguageContext'
 
 type Screen = 'setup' | 'quiz' | 'result'
 
@@ -35,6 +36,7 @@ function saveBestScore(
 }
 
 function App() {
+  const { language, setLanguage, t } = useLanguage()
   const [menuState, setMenuState] = useState<LoadState<MenuItem[]>>({ status: 'idle' })
   const [screen, setScreen] = useState<Screen>('setup')
   const [mode, setMode] = useState<Mode>('nameToNumber')
@@ -80,13 +82,13 @@ function App() {
     const qs = picked.map((item) => {
       switch (mode) {
         case 'nameToNumber':
-          return generateNameToNumberQuestion(item, menuState.data, difficulty, 4)
+          return generateNameToNumberQuestion(item, menuState.data, difficulty, 4, language)
         case 'numberToName':
-          return generateNumberToNameQuestion(item, menuState.data, difficulty, 4)
+          return generateNumberToNameQuestion(item, menuState.data, difficulty, 4, language)
         case 'nameToPrice':
-          return generateNameToPriceQuestion(item, menuState.data, difficulty, 4)
+          return generateNameToPriceQuestion(item, menuState.data, difficulty, 4, language)
         default:
-          return generateNameToNumberQuestion(item, menuState.data, difficulty, 4)
+          return generateNameToNumberQuestion(item, menuState.data, difficulty, 4, language)
       }
     })
 
@@ -170,17 +172,33 @@ function App() {
             IQ
           </div>
           <div className="brandText">
-            <div className="brandTitle">Italian-Restaurant-Quiz</div>
+            <div className="brandTitle">{t('brandTitle')}</div>
           </div>
         </button>
+        <div className="langSwitch">
+          <button
+            type="button"
+            className={language === 'ja' ? 'langBtn isActive' : 'langBtn'}
+            onClick={() => setLanguage('ja')}
+          >
+            JA
+          </button>
+          <button
+            type="button"
+            className={language === 'en' ? 'langBtn isActive' : 'langBtn'}
+            onClick={() => setLanguage('en')}
+          >
+            EN
+          </button>
+        </div>
       </header>
 
       <main className="card">
-        {menuState.status === 'loading' && <p className="muted">Loading menu data...</p>}
+        {menuState.status === 'loading' && <p className="muted">{t('loadingMenu')}</p>}
 
         {menuState.status === 'error' && (
           <div className="errorBox" role="alert">
-            <div className="errorTitle">Failed to load CSV</div>
+            <div className="errorTitle">{t('failedToLoadCsv')}</div>
             <div className="errorMessage">{menuState.message}</div>
           </div>
         )}

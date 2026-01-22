@@ -1,5 +1,6 @@
 import type { AnswerRecord } from '../types'
 import { useMemo, useState } from 'react'
+import { useLanguage } from '../contexts/LanguageContext'
 
 type Props = {
   answers: AnswerRecord[]
@@ -9,6 +10,7 @@ type Props = {
 }
 
 export function ResultScreen({ answers, bestScore, onRetry, onBackToSetup }: Props) {
+  const { t } = useLanguage()
   const total = answers.length
   const correctCount = answers.reduce((acc, a) => acc + (a.selectedIndex === a.correctIndex ? 1 : 0), 0)
   const pct = total === 0 ? 0 : Math.round((correctCount / total) * 100)
@@ -22,21 +24,21 @@ export function ResultScreen({ answers, bestScore, onRetry, onBackToSetup }: Pro
 
   return (
     <div className="screen">
-      <h1 className="pageTitle">Result</h1>
+      <h1 className="pageTitle">{t('result')}</h1>
       <div className="resultBox">
         <div className="resultScore">
           {correctCount} / {total}
         </div>
         <div className="resultPct">{pct}%</div>
         <div className="resultMeta">
-          Best: {bestScore === null ? '-' : `${bestScore} / ${total}`}
+          {t('best')} {bestScore === null ? '-' : `${bestScore} / ${total}`}
         </div>
       </div>
 
       {reviewItems.length > 0 && (
         <section className="reviewSection">
           <div className="reviewHeader">
-            <div className="panelTitle">Review</div>
+            <div className="panelTitle">{t('review')}</div>
             <div className="segmented" role="radiogroup" aria-label="Review mode">
               <button
                 type="button"
@@ -45,7 +47,7 @@ export function ResultScreen({ answers, bestScore, onRetry, onBackToSetup }: Pro
                 aria-checked={reviewMode === 'wrong'}
                 onClick={() => setReviewMode('wrong')}
               >
-                Wrong only
+                {t('wrongOnly')}
               </button>
               <button
                 type="button"
@@ -54,7 +56,7 @@ export function ResultScreen({ answers, bestScore, onRetry, onBackToSetup }: Pro
                 aria-checked={reviewMode === 'all'}
                 onClick={() => setReviewMode('all')}
               >
-                All
+                {t('all')}
               </button>
             </div>
           </div>
@@ -63,15 +65,15 @@ export function ResultScreen({ answers, bestScore, onRetry, onBackToSetup }: Pro
               <div className="reviewRow" key={a.questionId}>
                 <div className="reviewTop">
                   <div className={a.selectedIndex === a.correctIndex ? 'badge badgeOk' : 'badge badgeNg'}>
-                    {a.selectedIndex === a.correctIndex ? 'OK' : 'NG'}
+                    {a.selectedIndex === a.correctIndex ? t('ok') : t('ng')}
                   </div>
                   <div className="reviewPrompt">{a.prompt}</div>
                 </div>
                 <div className="reviewHint">{a.instruction}</div>
                 <div className="reviewDetail">
-                  Your: {a.choices[a.selectedIndex]}
+                  {t('yourAnswer')} {a.choices[a.selectedIndex]}
                 </div>
-                <div className="reviewDetail">Answer: {a.choices[a.correctIndex]}</div>
+                <div className="reviewDetail">{t('answer')} {a.choices[a.correctIndex]}</div>
               </div>
             ))}
           </div>
@@ -80,17 +82,17 @@ export function ResultScreen({ answers, bestScore, onRetry, onBackToSetup }: Pro
 
       {reviewItems.length === 0 && (
         <div className="feedback ok" role="status">
-          <div className="feedbackTitle">Perfect</div>
-          <div className="feedbackBody">No wrong answers to review.</div>
+          <div className="feedbackTitle">{t('perfect')}</div>
+          <div className="feedbackBody">{t('noWrongAnswers')}</div>
         </div>
       )}
 
       <div className="ctaRow ctaRowSplit">
         <button type="button" className="secondaryBtn" onClick={onBackToSetup}>
-          Back
+          {t('back')}
         </button>
         <button type="button" className="primaryBtn" onClick={onRetry}>
-          Retry
+          {t('retry')}
         </button>
       </div>
     </div>
