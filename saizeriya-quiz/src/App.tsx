@@ -165,15 +165,14 @@ function App() {
   return (
     <div className="app">
       <header className="appHeader">
-        <div className="brand">
+        <button type="button" className="brand" onClick={restart}>
           <div className="brandMark" aria-hidden="true">
-            SQ
+            IQ
           </div>
           <div className="brandText">
-            <div className="brandTitle">Saizeriya Quiz</div>
-            <div className="brandSub">CSV-driven menu quiz (local)</div>
+            <div className="brandTitle">Italian-Restaurant-Quiz</div>
           </div>
-        </div>
+        </button>
       </header>
 
       <main className="card">
@@ -188,7 +187,6 @@ function App() {
 
         {menuState.status === 'loaded' && screen === 'setup' && (
           <>
-            <p className="muted">Loaded: {menuState.data.length} items</p>
             <SetupScreen
               mode={mode}
               difficulty={difficulty}

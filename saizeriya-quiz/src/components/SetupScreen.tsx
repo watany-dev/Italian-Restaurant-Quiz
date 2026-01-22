@@ -23,7 +23,6 @@ export function SetupScreen({
 }: Props) {
   return (
     <div className="screen">
-      <p className="muted">4 choices. Local CSV-driven.</p>
       <p className="mutedSmall">
         Best (this mode): {bestScore === null ? '-' : `${bestScore} / ${questionCount}`}
       </p>
