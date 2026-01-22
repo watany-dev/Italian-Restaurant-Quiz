@@ -175,18 +175,6 @@ function App() {
             <div className="brandTitle">{t('brandTitle')}</div>
           </div>
         </button>
-        <a
-          href={
-            language === 'ja'
-              ? 'https://book.saizeriya.co.jp/menu2510_j/book/#target/page_no=1'
-              : 'https://book.saizeriya.co.jp/menu2510_e/book/#target/page_no=1'
-          }
-          target="_blank"
-          rel="noopener noreferrer"
-          className="menuLink"
-        >
-          {t('officialMenu')}
-        </a>
         <div className="langSwitch">
           <button
             type="button"
@@ -251,6 +239,21 @@ function App() {
           />
         )}
       </main>
+
+      <footer className="appFooter">
+        <a
+          href={
+            language === 'ja'
+              ? 'https://book.saizeriya.co.jp/menu2510_j/book/#target/page_no=1'
+              : 'https://book.saizeriya.co.jp/menu2510_e/book/#target/page_no=1'
+          }
+          target="_blank"
+          rel="noopener noreferrer"
+          className="footerLink"
+        >
+          {t('officialMenu')}
+        </a>
+      </footer>
     </div>
   )
 }
