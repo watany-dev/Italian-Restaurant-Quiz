@@ -51,4 +51,7 @@ export const en = {
 
   // Language selector
   language: 'Language',
+
+  // Menu reference
+  officialMenu: 'Official Menu',
 } as const
