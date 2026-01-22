@@ -20,6 +20,11 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 16px;
   backdrop-filter: blur(10px);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-align: left;
 }
 
 .brandMark {
