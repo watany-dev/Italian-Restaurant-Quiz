@@ -7,7 +7,31 @@
 .appHeader {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 18px;
+}
+
+.langSwitch {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.langBtn {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+  font-weight: 750;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.langBtn.isActive {
+  border-color: rgba(3, 114, 63, 0.35);
+  background: rgba(3, 114, 63, 0.12);
 }
 
 .brand {
