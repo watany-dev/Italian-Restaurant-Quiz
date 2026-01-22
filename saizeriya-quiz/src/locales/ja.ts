@@ -51,4 +51,7 @@ export const ja = {
 
   // Language selector
   language: '言語',
+
+  // Menu reference
+  officialMenu: '公式メニュー',
 } as const
